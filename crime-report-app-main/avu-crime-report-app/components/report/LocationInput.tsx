@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AddressAutofill } from "@mapbox/search-js-react";
+import axios from "axios";
 
 interface LocationInputProps {
   value: string;
@@ -14,6 +14,8 @@ export function LocationInput({
 }: LocationInputProps) {
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
+
+  const OPENCAGE_API_KEY = process.env.NEXT_PUBLIC_OPENCAGE_API_KEY || "";
 
   const getLocation = async () => {
     setIsGettingLocation(true);
@@ -31,11 +33,7 @@ export function LocationInput({
             (error) => {
               switch (error.code) {
                 case error.PERMISSION_DENIED:
-                  reject(
-                    new Error(
-                      "Please allow location access in your browser settings"
-                    )
-                  );
+                  reject(new Error("Please allow location access in your browser settings"));
                   break;
                 case error.POSITION_UNAVAILABLE:
                   reject(new Error("Location information is unavailable"));
@@ -47,11 +45,7 @@ export function LocationInput({
                   reject(new Error("An unknown error occurred"));
               }
             },
-            {
-              enableHighAccuracy: true,
-              timeout: 10000,
-              maximumAge: 0,
-            }
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
           );
         }
       );
@@ -60,7 +54,18 @@ export function LocationInput({
       if (onCoordinatesChange) {
         onCoordinatesChange(latitude, longitude);
       }
-      onChange(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+      
+      // Convert coordinates to address using OpenCage
+      const response = await axios.get(
+        `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${OPENCAGE_API_KEY}`
+      );
+
+      if (response.data.results.length > 0) {
+        const formattedAddress = response.data.results[0].formatted;
+        onChange(formattedAddress);
+      } else {
+        onChange(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+      }
     } catch (error) {
       console.error("Location error:", error);
       setLocationError(
@@ -77,20 +82,15 @@ export function LocationInput({
         Location
       </label>
       <div className="relative">
-        <AddressAutofill
-          accessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ""}
-        >
-          <input
-            type="text"
-            autoComplete="street-address"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="Enter location or use pin"
-            className="w-full rounded-xl bg-zinc-900/50 border border-zinc-800 pl-4 pr-12 py-3.5
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Enter location or use pin"
+          className="w-full rounded-xl bg-zinc-900/50 border border-zinc-800 pl-4 pr-12 py-3.5
                      text-white transition-colors duration-200
                      focus:outline-none focus:ring-2 focus:ring-sky-500/40"
-          />
-        </AddressAutofill>
+        />
         <button
           type="button"
           onClick={getLocation}
