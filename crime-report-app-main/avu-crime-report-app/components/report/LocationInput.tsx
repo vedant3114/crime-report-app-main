@@ -55,7 +55,7 @@ export function LocationInput({
         onCoordinatesChange(latitude, longitude);
       }
       
-      
+      // Convert coordinates to address using OpenCage
       const response = await axios.get(
         `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${OPENCAGE_API_KEY}`
       );
