@@ -3,6 +3,7 @@
 import { title } from "process";
 import { useState,useCallback } from "react"
 import { LocationInput } from "./LocationInput";
+import crypto from "crypto";
 
 const REPORT_TYPES =[
     "Theft",
@@ -39,7 +40,98 @@ export function ReportForm({onComplete}:ReportFormProps){
         longitude: null,
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    return <form className="space-y-8">
+
+    const handleImageUpload = async(e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      setIsAnalyzing(true);
+
+      try{
+        const base64 =await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => 
+            resolve(reader.result);
+            reader.readAsDataURL(file);
+          });
+
+          const response = await fetch("/api/analyze-image", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ image: base64 }),
+          });
+          const data = await response.json();
+
+        if(data.title && data.description && data.reportType){
+            setFormData((prev) => ({ 
+              ...prev,
+               title: data.title,
+               description: data.description,
+               specificType: data.reportType,
+              }));
+              setImage(base64 as string);
+          }
+
+
+      }catch(error){
+        console.error("Error uploading image:", error);
+      }finally{
+        setIsAnalyzing(false);
+      }
+
+    };
+
+    const generateReportID = useCallback(() => {
+        const timestamp = Date.now().toString(); // Get the current timestamp
+        const randomBytes=crypto.randomBytes(16).toString('hex');
+        const combinedString= `${timestamp}-${randomBytes}`;
+
+        return crypto.createHash('sha256').update(combinedString).digest('hex').slice(0, 16);
+    },[]);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+       try {
+        const reportData = {
+          reportId : generateReportID(),
+          type: formData.incidentType,
+          specificType: formData.specificType,
+          title: formData.title,
+          description: formData.description,
+          location: formData.location,
+          latitude: cordinates.latitude,
+          longitude: cordinates.longitude,
+          image: image,
+          status: "PENDING",
+        };
+
+        const response = await fetch("/api/report", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(reportData),
+        });
+
+        const result = await response.json();
+
+        if(!response.ok){
+            throw new Error(result.error|| "Failed to submit report");
+            return;
+        }
+        onComplete(result);
+
+        
+       } catch (error) {
+        console.error("Error submitting report:", error);
+       }finally{
+        setIsSubmitting(false);
+       }
+    };
+    return <form  onSubmit={handleSubmit} className="space-y-8">
         {/* Emergency Type Selection */}
         <div className="grid grid-cols-2 gap">
             <button type="button"
@@ -107,7 +199,7 @@ export function ReportForm({onComplete}:ReportFormProps){
         <div className="relative group">
           <input type="file"
           accept="image/*"
-         // onChange={handleImageUpload}
+         onChange={handleImageUpload}
           className="hidden"
           id="image-upload"
            />
