@@ -1,6 +1,8 @@
 'use client'
 import { use, useState } from 'react';
 import { ReportForm } from './ReportForm';
+import { ReportSubmitted } from './ReportFormCompleted';
+import { report } from 'process';
 //report form
 //report submitted
  export function ReportWizard(){
@@ -19,6 +21,9 @@ import { ReportForm } from './ReportForm';
 
     return (<div className='rounded-2xl bg-zinc-900 p-8'>
             {currentstep ===1 && <ReportForm onComplete={handleStepComplete}/>}
+            {currentstep ===2 && (
+                <ReportSubmitted data={reportData} onComplete={handleStepComplete}/>
+                )}
         </div>
     );
     
