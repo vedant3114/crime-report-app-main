@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Search, Loader, Download } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -26,7 +26,7 @@ export function ReportTracker({ initialReportId = "" }: ReportTrackerProps) {
   const [reportDetails, setReportDetails] = useState<ReportDetails | null>(null);
   // Remove: const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setReportDetails(null);
@@ -50,7 +50,7 @@ export function ReportTracker({ initialReportId = "" }: ReportTrackerProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [reportId]);
 
   const handleDownload = async () => {
     if (!reportDetails) return;

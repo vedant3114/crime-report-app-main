@@ -21,7 +21,7 @@ export function ReportDetails({ reportId }: ReportDetailsProps) {
         }
         const data = await response.json();
         setReport(data);
-      } catch (error) {
+      } catch {
         toast.error('Failed to fetch report details');
       } finally {
         setLoading(false);

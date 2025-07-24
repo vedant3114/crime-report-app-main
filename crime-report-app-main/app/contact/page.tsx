@@ -1,8 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-
 export default function Contact() {
   const handleCall = (number: string) => {
     window.location.href = `tel:${number}`;

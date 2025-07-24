@@ -132,7 +132,7 @@ function wrapText(text: string, maxWidth: number, font: unknown, fontSize: numbe
 
   for (const word of words) {
     const testLine = currentLine + (currentLine ? ' ' : '') + word;
-    const testWidth = (font as any).widthOfTextAtSize(testLine, fontSize); // Cast to any to avoid type error
+    const testWidth = (font as unknown as any).widthOfTextAtSize(testLine, fontSize); // Cast to any to avoid type error
 
     if (testWidth <= maxWidth) {
       currentLine = testLine;

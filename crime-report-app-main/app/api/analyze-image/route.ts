@@ -42,16 +42,15 @@ IS_EMERGENCY: true or false (true if the image shows signs of immediate danger, 
           description: descMatch?.[1]?.trim() || "",
           isEmergency: emergencyMatch?.[1]?.toLowerCase() === "true" || false,
         });
-      } catch (error: any) {
+      } catch (error: unknown) {
         lastError = error;
         // Check for 429 Too Many Requests
-        if (error?.status === 429) {
+        if (typeof error === 'object' && error !== null && 'status' in error && (error as any).status === 429) {
           let delay = 40000; // default 40s
           // Try to extract retryDelay from error details
-          if (error?.errorDetails) {
-            const retryInfo = error.errorDetails.find((d: any) => d["@type"] === "type.googleapis.com/google.rpc.RetryInfo");
-            if (retryInfo && retryInfo.retryDelay) {
-              // retryDelay is in the format '40s'
+          if (typeof error === 'object' && error !== null && 'errorDetails' in error) {
+            const retryInfo = (error as { errorDetails?: unknown[] }).errorDetails?.find((d: any) => d["@type"] === "type.googleapis.com/google.rpc.RetryInfo");
+            if (retryInfo && typeof retryInfo === 'object' && 'retryDelay' in retryInfo && typeof retryInfo.retryDelay === 'string') {
               const match = retryInfo.retryDelay.match(/(\d+)s/);
               if (match) delay = parseInt(match[1], 10) * 1000;
             }

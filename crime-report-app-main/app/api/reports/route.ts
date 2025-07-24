@@ -46,13 +46,13 @@ export async function GET(req: Request) {
     return NextResponse.json(reports);
   } catch (error: unknown) {
     console.error("Failed to fetch reports:", error);
-    if (typeof error === "object" && error !== null && "code" in error && (error as any).code === "P1001") {
+    if (typeof error === "object" && error !== null && "code" in error && (error as unknown as { code?: string }).code === "P1001") {
       return NextResponse.json(
         { error: "Cannot connect to database. Please try again later." },
         { status: 503 }
       );
     }
-    if (typeof error === "object" && error !== null && "code" in error && (error as any).code === "P2024") {
+    if (typeof error === "object" && error !== null && "code" in error && (error as unknown as { code?: string }).code === "P2024") {
       return NextResponse.json(
         { error: "Database connection timeout. Please try again." },
         { status: 504 }
