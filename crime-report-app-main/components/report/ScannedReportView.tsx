@@ -47,7 +47,7 @@ export function ScannedReportView({ scannedData }: ScannedReportViewProps) {
         </div>
       </div>
     );
-  } catch (error) {
+  } catch {
     return (
       <div className="p-6 bg-red-900/50 rounded-xl text-center">
         <p className="text-red-400">Invalid report data</p>

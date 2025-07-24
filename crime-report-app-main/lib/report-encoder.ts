@@ -11,7 +11,7 @@ export function encodeReportData(report: Report) {
 export function decodeReportData(encodedData: string) {
   try {
     return JSON.parse(encodedData);
-  } catch (error) {
+  } catch {
     throw new Error('Invalid report data');
   }
 } 
