@@ -25,7 +25,7 @@ export function ReportTracker({ initialReportId = "" }: ReportTrackerProps) {
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [reportDetails, setReportDetails] = useState<ReportDetails | null>(null);
-  const router = useRouter();
+  // Remove: const router = useRouter();
 
   useEffect(() => {
     if (initialReportId) {

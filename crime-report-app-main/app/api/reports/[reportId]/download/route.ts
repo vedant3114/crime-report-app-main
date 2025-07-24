@@ -75,7 +75,6 @@ export async function GET(
 
     let y = height - 100;
     const lineHeight = 25;
-    const labelWidth = 100;
     const valueX = 160;
 
     details.forEach(({ label, value }) => {
@@ -126,14 +125,14 @@ export async function GET(
 }
 
 // Helper function to wrap text
-function wrapText(text: string, maxWidth: number, font: any, fontSize: number): string[] {
+function wrapText(text: string, maxWidth: number, font: unknown, fontSize: number): string[] {
   const words = text.split(' ');
   const lines: string[] = [];
   let currentLine = '';
 
   for (const word of words) {
     const testLine = currentLine + (currentLine ? ' ' : '') + word;
-    const testWidth = font.widthOfTextAtSize(testLine, fontSize);
+    const testWidth = (font as any).widthOfTextAtSize(testLine, fontSize); // Cast to any to avoid type error
 
     if (testWidth <= maxWidth) {
       currentLine = testLine;

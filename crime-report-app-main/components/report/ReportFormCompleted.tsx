@@ -3,14 +3,14 @@
 import { QRCodeSVG } from "qrcode.react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ReportFormData } from "./ReportForm";
 
 interface ReportSubmittedProps {
-  data: any;
+  data: ReportFormData;
   onCompleteAction: () => void;
 }
 
 export function ReportSubmitted({ data, onCompleteAction }: ReportSubmittedProps) {
-  const router = useRouter();
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleTrackReport = () => {

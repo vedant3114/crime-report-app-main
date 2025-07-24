@@ -30,16 +30,14 @@ export async function PATCH(
     });
 
     return NextResponse.json(report);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating report:", error);
-    
-    if (error.code === "P2025") {
+    if (typeof error === "object" && error !== null && "code" in error && (error as any).code === "P2025") {
       return NextResponse.json(
         { error: "Report not found" },
         { status: 404 }
       );
     }
-
     return NextResponse.json(
       { error: "Error updating report" },
       { status: 500 }

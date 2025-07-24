@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { ReportForm } from "./ReportForm";
+import { ReportForm, ReportFormData } from "./ReportForm";
 import { ReportSubmitted } from "./ReportFormCompleted";
 import { useRouter } from "next/navigation";
 
 export function ReportWizard() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [reportData, setReportData] = useState<any>(null);
+  const [reportData, setReportData] = useState<ReportFormData | null>(null);
   const router = useRouter();
 
-  const handleStepComplete = async (data: any) => {
+  const handleStepComplete = async (data: ReportFormData) => {
     setReportData(data);
     setCurrentStep(2);
   };

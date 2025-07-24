@@ -56,7 +56,7 @@ export default function TestDashboard() {
           <h2 className="mt-6 text-xl">📄 Reports Data:</h2>
           {reports.length > 0 ? (
             <ul className="mt-2">
-              {reports.map((report: any) => (
+              {reports.map((report: { id: string; title: string; status: string }) => (
                 <li key={report.id} className="border p-2 my-2">
                   {report.title} - {report.status}
                 </li>

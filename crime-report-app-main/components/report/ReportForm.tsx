@@ -16,8 +16,21 @@ const REPORT_TYPES = [
 
 type ReportType = "EMERGENCY" | "NON_EMERGENCY";
 
+export interface ReportFormData {
+  reportId: string;
+  type: string;
+  specificType: string;
+  title: string;
+  description: string;
+  location: string;
+  latitude: number | null;
+  longitude: number | null;
+  image: string;
+  status: string;
+}
+
 interface ReportFormProps {
-  onCompleteAction: (data: any) => void;
+  onCompleteAction: (data: ReportFormData) => void;
 }
 
 export function ReportForm({ onCompleteAction }: ReportFormProps) {
