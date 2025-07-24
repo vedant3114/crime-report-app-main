@@ -21,7 +21,7 @@ export function ReportStatus({ reportId }: ReportStatusProps) {
         }
         const data = await response.json();
         setReport(data);
-      } catch (error) {
+      } catch {
         toast.error('Failed to fetch report status');
       } finally {
         setLoading(false);

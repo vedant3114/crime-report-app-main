@@ -1,7 +1,6 @@
 "use client";
 
 import { QRCodeSVG } from "qrcode.react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ReportFormData } from "./ReportForm";
 

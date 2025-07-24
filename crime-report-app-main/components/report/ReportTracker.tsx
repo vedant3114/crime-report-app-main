@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Search, Loader, Download } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -27,12 +26,6 @@ export function ReportTracker({ initialReportId = "" }: ReportTrackerProps) {
   const [reportDetails, setReportDetails] = useState<ReportDetails | null>(null);
   // Remove: const router = useRouter();
 
-  useEffect(() => {
-    if (initialReportId) {
-      handleSubmit(new Event("submit") as any);
-    }
-  }, [initialReportId]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -52,7 +45,7 @@ export function ReportTracker({ initialReportId = "" }: ReportTrackerProps) {
       }
       const data = await response.json();
       setReportDetails(data);
-    } catch (err) {
+    } catch {
       setError("Unable to find report. Please check the ID and try again.");
     } finally {
       setLoading(false);
@@ -98,6 +91,12 @@ export function ReportTracker({ initialReportId = "" }: ReportTrackerProps) {
       setDownloading(false);
     }
   };
+
+  useEffect(() => {
+    if (initialReportId) {
+      handleSubmit(new Event("submit") as unknown as React.FormEvent);
+    }
+  }, [initialReportId, handleSubmit]);
 
   return (
     <div className="w-full">
