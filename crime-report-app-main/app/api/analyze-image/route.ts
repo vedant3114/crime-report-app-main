@@ -49,9 +49,16 @@ IS_EMERGENCY: true or false (true if the image shows signs of immediate danger, 
           let delay = 40000; // default 40s
           // Try to extract retryDelay from error details
           if (typeof error === 'object' && error !== null && 'errorDetails' in error) {
-            const retryInfo = (error as { errorDetails?: unknown[] }).errorDetails?.find((d: any) => d["@type"] === "type.googleapis.com/google.rpc.RetryInfo");
-            if (retryInfo && typeof retryInfo === 'object' && 'retryDelay' in retryInfo && typeof retryInfo.retryDelay === 'string') {
-              const match = retryInfo.retryDelay.match(/(\d+)s/);
+            const retryInfo = (error as { errorDetails?: unknown[] }).errorDetails?.find(
+              (d: unknown) => typeof d === "object" && d !== null && "@type" in d && (d as { [key: string]: unknown })["@type"] === "type.googleapis.com/google.rpc.RetryInfo"
+            );
+            if (
+              retryInfo &&
+              typeof retryInfo === "object" &&
+              "retryDelay" in retryInfo &&
+              typeof (retryInfo as { retryDelay?: unknown }).retryDelay === "string"
+            ) {
+              const match = (retryInfo as { retryDelay: string }).retryDelay.match(/(\d+)s/);
               if (match) delay = parseInt(match[1], 10) * 1000;
             }
           }
