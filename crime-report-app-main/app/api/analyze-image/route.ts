@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     const { image } = await request.json();
     const base64Data = image.split(",")[1];
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `Analyze this image and respond in this exact format without any asterisks or bullet points:
 TITLE: Write a clear, brief title
@@ -45,7 +45,7 @@ IS_EMERGENCY: true or false (true if the image shows signs of immediate danger, 
       } catch (error: unknown) {
         lastError = error;
         // Check for 429 Too Many Requests
-        if (typeof error === 'object' && error !== null && 'status' in error && (error as any).status === 429) {
+        if (typeof error === 'object' && error !== null && 'status' in error && (error as { status?: number }).status === 429) {
           let delay = 40000; // default 40s
           // Try to extract retryDelay from error details
           if (typeof error === 'object' && error !== null && 'errorDetails' in error) {
