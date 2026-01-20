@@ -6,10 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.8.0",
     "@google/generative-ai": "^0.21.0",
     "@mapbox/search-js-react": "^1.0.0-beta.22",
     "@neondatabase/serverless": "^0.10.3",
