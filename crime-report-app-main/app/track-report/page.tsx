@@ -1,9 +1,9 @@
 "use client";
+import { Suspense, useState } from "react";
 import { ReportTracker } from "@/components/report/ReportTracker";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
 
-export default function TrackReportPage() {
+function TrackReportContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const reportId = searchParams.get("reportId");
@@ -60,5 +60,13 @@ export default function TrackReportPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function TrackReportPage() {
+  return (
+    <Suspense fallback={<div className="text-white text-center p-10">Loading...</div>}>
+      <TrackReportContent />
+    </Suspense>
   );
 }
